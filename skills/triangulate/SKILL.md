@@ -60,6 +60,32 @@ API contract changes, schema migrations, brand-pixel decisions, hiring decisions
 
 **Action:** dispatch perspective-specific subagents (one per stakeholder concern) and synthesize. This is `adversarial-reviewer` for non-code surfaces.
 
+### 6. Verifying async state changes after a triggering action
+
+Deploys, publishes, DNS changes, cache invalidations, webhook propagation, replicated database writes — anywhere you triggered something and want to confirm "did it happen?"
+
+**Why:** async systems have eventual consistency, not synchronous. Polling at T+5 seconds when propagation takes 2 minutes returns stale data, which produces wrong conclusions, which produce wrong actions. **"Sometimes you have to go slow to go fast."**
+
+**Action:** before checking, estimate the system's propagation window. WAIT that window before drawing conclusions. If you must check early, label the result PROVISIONAL.
+
+Reference table — typical propagation windows:
+
+| Operation | First-check | Full-confidence |
+|---|---|---|
+| Vercel production deploy | 90-120s | 3-5 min |
+| Vercel CDN edge invalidation | 60-120s | 2-3 min |
+| GitHub deployments API record | 30-60s | 90s |
+| npm registry availability | 30-60s | 90s |
+| DNS TTL propagation | 60-300s | 5-15 min |
+| Supabase RLS / migration | <1s | 5s |
+| Database read replica lag | 100ms-1s | 2s |
+| Stripe webhook delivery | 1-30s | 60s |
+| Email delivery (transactional) | 30s-5min | 15 min |
+
+**The cache-buster trap:** appending `?cb=...` does NOT defeat server-side static-page generation. If `X-Vercel-Cache: HIT` after a cache-buster, the page is being served from a build that hasn't regenerated yet. Wait, don't keep busting.
+
+**Anti-pattern:** polling in a tight loop to "race" propagation. That hits rate limits, produces false-failure conclusions, and burns trust with the user when you say "didn't work" before the system finished.
+
 ## What counts as an "outside source"
 
 Listed in increasing distance from your weights:
