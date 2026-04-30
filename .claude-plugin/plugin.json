@@ -1,6 +1,6 @@
 {
   "name": "triangulate",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Meta-decision skill for forking to outside sources of truth at specific trigger points (compliance copy, architectural alternatives, image prompts, debug loops, cross-cutting decisions). Fires existing review skills at the right moments.",
   "author": {
     "name": "Dan Zimon",

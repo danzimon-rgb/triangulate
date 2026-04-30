@@ -6,14 +6,31 @@
 
 LLMs anchor on first instinct. When the model produces output AND evaluates it, evaluation runs on the same weights that produced it — same blind spots, same biases. Self-review under those conditions is rubber-stamp review.
 
-`triangulate` is the **meta-decision skill** that fires existing review tools (`second-opinion`, `adversarial-reviewer`, `dispatching-parallel-agents`, `Agent` subagents) at the right moments — and covers surfaces those skills don't, like compliance copy, image prompts, and architectural alternatives.
+`triangulate` is the **meta-decision skill** that fires existing review tools (`second-opinion`, `adversarial-reviewer`, `dispatching-parallel-agents`, `Agent` subagents) at the right moments — and covers surfaces those skills don't, like compliance copy, image prompts, architectural alternatives, and async state verification.
+
+## Install
+
+**One command:**
+
+```bash
+git clone https://github.com/danzimon-rgb/triangulate ~/.claude/skills/triangulate
+```
+
+Restart Claude Code. The skill auto-loads on session start. The description triggers Claude to invoke it automatically when relevant; you can also invoke it explicitly with the `Skill` tool.
+
+**Project-scoped install (this repo only, not user-level):**
+
+```bash
+git clone https://github.com/danzimon-rgb/triangulate .claude/skills/triangulate
+```
 
 ## What's in the box
 
-- **Five trigger points** where the agent must fork to an outside source automatically: compliance/legal copy, architectural alternatives, image/video prompts, debug loops >2 cycles, cross-cutting decisions.
+- **Six trigger points** where the agent must fork to an outside source automatically: compliance/legal copy, architectural alternatives, image/video prompts, debug loops >2 cycles, cross-cutting decisions, **async state verification (propagation patience)**.
 - **A taxonomy of "outside sources"** — different model > fresh subagent > persona shift, in order of independence.
 - **A maturity-test gating question** to ask before shipping: *"would another model produce a meaningfully different answer here?"*
 - **Concrete invocation patterns** — which tool to fire for which trigger.
+- **A propagation-windows reference table** — Vercel, GitHub API, DNS, Supabase, Stripe, etc. — so you wait the right amount of time before claiming verification.
 - **Anti-patterns** — when NOT to fork (routine work, after the user said ship, etc.)
 
 ## Origin
@@ -22,21 +39,9 @@ Authored by Dan Zimon (founder, [Teranode AI](https://teranode.ai)) on 2026-04-2
 
 > **The cost of the 30-second pause to fork the question is much lower than the cost of shipping the inferior pattern.**
 
-Same principle Teranode ships at the product level (five reasoning models forking advisory questions in parallel), now applied at the developer level.
+The skill grew on its first day in public: Trigger #6 (async state verification, "go slow to go fast") was added the same night after Claude polled a Vercel deploy too quickly and produced wrong conclusions on still-propagating data — Dan named the discipline, we built the artifact, the world got the lesson. That's the pattern this whole skill is about.
 
-## Installation
-
-Drop the `skills/triangulate/` directory into your Claude Code skills path:
-
-```bash
-# User-level (works across all projects)
-cp -r skills/triangulate ~/.claude/skills/
-
-# Project-level (this project only)
-cp -r skills/triangulate .claude/skills/
-```
-
-The skill auto-loads on session start. Invoke directly with the `Skill` tool when needed; the description triggers Claude to invoke it automatically when relevant.
+Same principle Teranode ships at the product level — five reasoning models forking advisory questions in parallel — now applied at the developer level. **Two scales, one principle.**
 
 ## How it complements existing skills
 
