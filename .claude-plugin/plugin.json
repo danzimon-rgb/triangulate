@@ -1,0 +1,21 @@
+{
+  "name": "triangulate",
+  "version": "1.0.0",
+  "description": "Meta-decision skill for forking to outside sources of truth at specific trigger points (compliance copy, architectural alternatives, image prompts, debug loops, cross-cutting decisions). Fires existing review skills at the right moments.",
+  "author": {
+    "name": "Dan Zimon",
+    "email": "dan@teranode.ai",
+    "url": "https://teranode.ai"
+  },
+  "license": "MIT",
+  "homepage": "https://teranode.ai",
+  "keywords": [
+    "review",
+    "second-opinion",
+    "cross-model",
+    "discipline",
+    "decision-making",
+    "anti-anchoring",
+    "triangulation"
+  ]
+}
